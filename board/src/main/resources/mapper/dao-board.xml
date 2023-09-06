@@ -17,9 +17,28 @@
 		<result 	column="updater_id" 				property="updaterId"/>
 		<result 	column="deleted_yn" 				property="deletedYn"/>
 	</resultMap>
+	
+	<insert id="insertBoard" parameterType="BoardDto">
+		/* 게시글 등록 */
+		<![CDATA[
+			INSERT INTO t_board
+			(
+				title,
+				contents,
+				created_datetime,
+				creator_id
+			)
+			VALUES
+			(	#{title},
+				#{contents},
+				NOW(),
+				'admin'
+			)
+		]]>
+	</insert>
 
 	<select id="selectBoardList" resultMap="boardResultMap">
-		/* 게시판 목록 조회 */
+		/* 게시글 내역 조회 */
 		<![CDATA[
 			SELECT
 				board_idx,

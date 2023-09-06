@@ -8,7 +8,9 @@ import board.rest.api.dto.BoardDto;
 
 @Mapper
 public interface BoardMapper {
-		// 게시판 목록 조회
+		// 게시글 등록
+		void insertBoard(BoardDto board) throws Exception;
+	
+		// 게시글 내역 조회
 		List<BoardDto> selectBoardList() throws Exception;
-
 }
