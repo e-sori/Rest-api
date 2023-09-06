@@ -13,7 +13,12 @@ import lombok.RequiredArgsConstructor;
 public class BoardService {
 	private final BoardMapper boardMapper;
 	
-	// 게시판 목록 조회
+	// 게시글 등록
+	public void insertBoard(BoardDto board) throws Exception{
+		boardMapper.insertBoard(board);
+	}
+	
+	// 게시글 내역 조회
 	public List<BoardDto> selectBoardList() throws Exception{
 		return boardMapper.selectBoardList();
 	}
