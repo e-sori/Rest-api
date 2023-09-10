@@ -24,19 +24,23 @@
 	            </tr>
 	        </thead>
 	        <tbody>
+				<!-- th:if - 타임리프 문법을 사용 할 경우에 쓰는 if 문 -->
+				<!-- if문 내의 조건이 일치해야만 해당 tr이 생성된다. -->
+				<!-- th:each - 타임리프 문법을 사용할 경우에 쓰는 반복문 ( ${list}에 들어있는 값을 모두 순회하면서 tr 태그를 생성한다. )-->
 	        	<tr th:if="${#lists.size(list)} > 0" th:each="list : ${list}">
 	        		<td th:text="${list.boardIdx}"></td>
-	        		<!-- 여기 -->
-	        		<td class="title"><a href="/board/" th:attrappend="href=${list.boardIdx}" th:text="${list.title}"></a></td>
+	        		<!-- th:href -  타임리프 문법을 사용할 경우에 쓰는 href 속성 -->
+	        		<!-- href="/board/" th:attrappend="href=${list.boardIdx}" 로도 작성 가능하다. -->
+	        		<td class="title"><a th:href="'/board/' + ${list.boardIdx}"  th:text="${list.title}"></a></td>
 	        		<td th:text="${list.hitCnt}"></td>
 	        		<td th:text="${list.createdDatetime}"></td>
 	        	</tr> 
+	        	<!-- th:unless - 타임리프 문법을 사용할 경우에 쓴는 if 문 / 단, if와 반대로 조건이 일치하지 않을 경우 tr 생성 -->
 	        	<tr th:unless="${#lists.size(list)} > 0">
 	        		<td colspan="4">조회된 결과가 없습니다.</td>
 	        	</tr>
 	        </tbody>
 	    </table>
-	    <!-- 여기 -->
 	    <a href="/board/write" class="btn">글 쓰기</a>
     </div>
 </body>

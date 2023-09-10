@@ -5,21 +5,12 @@
 
 <!-- dao 작성 -->
 <!-- namespace : implememts와 같은 기능 -->
+<!-- BoardMapper.java 인터페이스의 상속을 받아 구현하겠다는 뜻 -->
+<!-- CDATA : 특수 문자(<, >, & 등)를 태그로 인식하지 않고 쿼리 코드라는 것을 명시 -->
+<!-- 특수 문자가 없는 경우에도 넣어준 이유는 코드의 일관성과 나중에 쿼리가 수정될 수 있기 때문 -->
 <mapper namespace="board.rest.api.mapper.BoardMapper">
-	<resultMap type="BoardDto" id="boardResultMap">
-		<id 			column="board_idx" 				property="boardIdx"/>
-		<result 	column="title" 							property="title"/>
-		<result 	column="contents" 					property="contents"/>
-		<result 	column="hit_cnt" 						property="hitCnt"/>
-		<result 	column="created_datetime" 	property="createdDatetime"/>
-		<result 	column="creator_id" 				property="creatorId"/>
-		<result 	column="updated_datetime" property="updatedDatetime"/>
-		<result 	column="updater_id" 				property="updaterId"/>
-		<result 	column="deleted_yn" 				property="deletedYn"/>
-	</resultMap>
-
-	<select id="selectBoardList" resultMap="boardResultMap">
-		/* 게시판 목록 조회 */
+	<select id="selectBoardList" resultType="BoardDto">
+		/* 게시글 내역 조회 */
 		<![CDATA[
 			SELECT
 				board_idx,
@@ -33,4 +24,86 @@
 			ORDER BY board_idx DESC		
 		]]>		
 	</select>
+	
+	<insert id="insertBoard" parameterType="BoardDto">
+		/* 게시글 등록 */
+		<![CDATA[
+			INSERT INTO t_board
+			(
+				title,
+				contents,
+				created_datetime,
+				creator_id
+			)
+			VALUES
+			(	#{title},
+				#{contents},
+				NOW(),
+				'admin'
+			)
+		]]>
+	</insert>
+	
+	<update id="updateHitCount" parameterType="int">
+		/* 조회수 증가 */
+		<![CDATA[
+			UPDATE
+				t_board
+			SET
+				hit_cnt = hit_cnt + 1
+			WHERE
+				board_idx = #{boardIdx}
+		]]>
+	</update>
+	
+	<select id="selectBoardDetail" parameterType="int">
+		/* 해당 게시글 조회 */
+		<![CDATA[
+			SELECT
+				board_idx,
+				title,
+				contents,
+				hit_cnt,
+				creator_id,
+				created_datetime
+			FROM
+				t_board
+			WHERE
+				board_idx = #{boardIdx}
+		]]>
+	</select>
+	
+	<update id="modifyBoard" parameterType="BoardDto">
+		/* 게시글 수정 */
+		<![CDATA[
+			UPDATE
+				t_board
+			SET
+				title = #{title},
+				contents = #{contents},
+				updated_datetime = NOW(),
+				updater_id = 'admin'
+			WHERE
+				board_idx = #{boardIdx}
+		]]>
+	</update>
+	
+	<!-- delete를 사용하지 않고 update를 사용하는 이유 -->
+	<!-- db에서 아예 데이터를 삭제하지 않기 위해서 -->
+	<!-- deleted_yn 컬럼을 'Y'로 수정해서 조회시에 보이지 않게만 한다. -->
+	<!-- select 문에서 deleted_yn이 'N'인 것만 조회하는 조건 걸어뒀음 -->
+	<update id="deleteBoard" parameterType="int">
+		/* 게시글 삭제 */
+		<![CDATA[
+			 UPDATE
+			 	t_board
+			 SET
+			 	deleted_yn = 'Y',
+			 	updated_datetime = NOW(),
+			 	updater_id = 'admin'
+			 WHERE
+			 	board_idx = #{boardIdx}
+		]]>		
+	</update>
+	
 </mapper>
