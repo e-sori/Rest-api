@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import board.rest.api.dto.BoardDto;
+import board.rest.api.dto.BoardFileDto;
 
 @Mapper
 public interface BoardMapper {
@@ -13,7 +14,13 @@ public interface BoardMapper {
 	
 	// 게시글 등록
 	void insertBoard(BoardDto board) throws Exception;	
-		
+	
+	// 데이터베이스에 파일 정보 저장
+	void insertBoardFileList(List<BoardFileDto> fileList) throws Exception;
+	
+	// 업로드된 파일 정보 조회
+	List<BoardFileDto> selectBoardFileList(int boardIdx) throws Exception;
+	
 	// 조회수 증가
 	void updateHitCount(int boardIdx) throws Exception;
 	

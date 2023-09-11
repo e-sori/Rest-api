@@ -10,13 +10,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import board.rest.api.dto.BoardDto;
 import board.rest.api.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/board")
 public class BoardController {
 	
@@ -40,10 +44,10 @@ public class BoardController {
 	
 	// 게시글 등록 처리
 	@PostMapping("/write")
-	public String insertBoard(BoardDto board) throws Exception{
-		boardService.insertBoard(board);
-		
-		return "redirect:/board";
+	public String insertBoard(BoardDto board, @RequestParam("files") List<MultipartFile> files) throws Exception{
+	    boardService.insertBoard(board, files);
+	    
+	    return "redirect:/board";
 	}
 	
 	// 게시글 상세 조회 화면

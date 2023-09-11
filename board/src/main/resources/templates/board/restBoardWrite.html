@@ -8,9 +8,9 @@
 <body>
 	<div class="container">
 	    <h2>게시글 등록</h2>
-	    <!-- 여기 -->
-	    <form id="frm" name="frm" method="post" action="/board/write" enctype="multipart/form-data">
-	    	<table class="board_detail">
+	   <!-- enctype="multipart/form-data"를 추가해주는 것이 포인트 -->
+		<form id="frm" name="frm" method="post" action="/board/write" enctype="multipart/form-data">
+			<table class="board_detail">
 	    		<tr>
 	    			<td>제목</td>
 	    			<!--name이 서버에 전달되는 변수-->
@@ -23,8 +23,8 @@
 	    			</td>
 	    		</tr>
 	    	</table>
-	    	<input type="file" id="files" name="files" multiple="multiple">
-	    	<input type="submit" id="submit" value="저장" class="btn">
+			<input type="file" id="files" name="files" multiple="multiple">
+			<input type="submit" id="submit" value="등록" class="btn">
 	    </form>
     </div>
 </body>

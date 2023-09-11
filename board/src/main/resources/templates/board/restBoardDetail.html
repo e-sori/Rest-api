@@ -43,14 +43,13 @@
 			</table>
 			<input type="hidden" id="boardIdx" name="boardIdx" th:value="${board.boardIdx}">
 			<input type="hidden" id="method" name="_method"/>
+			<div class="file_list">[ 첨부파일 ]
+				<a th:each="list : ${board.fileList}" th:href="@{/board/file(idx=${list.idx}, boardIdx=${list.boardIdx})}" th:text="|${list.originalFileName} (${list.fileSize} kb)|"></a>
+			</div>	
 			<a href="/board" id="list" class="btn">목록으로</a>
 			<a th:href="'/board/modify/' + ${boardIdx}" id="edit" class="btn">수정하기</a>
 			<button type="submit" id="delete" class="btn">삭제하기</button>
-		</form>
-		
-		<!--<div class="file_list">
-			<a th:each="list : ${board.fileList}" th:href="@{/board/file(idx=${list.idx}, boardIdx=${list.boardIdx})}" th:text="|${list.originalFileName} (${list.fileSize} kb)|"></a>
-		</div>-->		
+		</form>		
 	</div>
 </body>
 </html>
