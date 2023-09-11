@@ -43,7 +43,7 @@
 			</table>
 			<input type="hidden" id="boardIdx" name="boardIdx" th:value="${board.boardIdx}">
 			<input type="hidden" id="method" name="_method"/>
-			<div class="file_list">[ 첨부파일 ]
+			<div class="file_list" th:if="${board.fileList != null  and board.fileList.size() > 0}">[ 첨부파일 ]
 				<a th:each="list : ${board.fileList}" th:href="@{/board/file(idx=${list.idx}, boardIdx=${list.boardIdx})}" th:text="|${list.originalFileName} (${list.fileSize} kb)|"></a>
 			</div>	
 			<a href="/board" id="list" class="btn">목록으로</a>

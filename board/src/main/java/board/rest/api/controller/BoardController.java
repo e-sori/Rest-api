@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
 import board.rest.api.dto.BoardDto;
 import board.rest.api.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +65,6 @@ public class BoardController {
 	@GetMapping("/modify/{boardIdx}")
 	public String openBoardModify(@PathVariable("boardIdx") int boardIdx, Model model) throws Exception{
 		BoardDto board = boardService.selectBoardDetail(boardIdx);
-		
 		model.addAttribute("board", board);
 		
 		return "/board/restBoardModify";
