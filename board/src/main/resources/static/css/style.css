@@ -39,4 +39,5 @@ caption {display:none; width:0; height:0; margin-top:-1px; overflow:hidden; visi
 .btn:hover {background: #6b9ab8;}
 
 .file_list a {display:inherit !important;}
+.file_list  {margin-top:10px; margin-bottom: 10px; margin-left: 10px;}
 

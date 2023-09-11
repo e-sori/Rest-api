@@ -25,23 +25,49 @@
 		]]>		
 	</select>
 	
-	<insert id="insertBoard" parameterType="BoardDto">
-		/* 게시글 등록 */
-		<![CDATA[
-			INSERT INTO t_board
-			(
-				title,
-				contents,
-				created_datetime,
-				creator_id
-			)
-			VALUES
-			(	#{title},
-				#{contents},
-				NOW(),
-				'admin'
-			)
-		]]>
+	<!-- useGeneratedKey : insert 문에서 insert된 auto-increment 또는 sequence로 생성된 기본 키의 값을 가져온다. -->
+	<!-- keyProperty : 가져온 값을 담아주는 변수 -->
+	<insert id="insertBoard" parameterType="BoardDto" useGeneratedKeys="true" keyProperty="boardIdx">
+	    /* 게시글 등록 */
+	    <![CDATA[
+	        INSERT INTO t_board
+	        (
+	            title,
+	            contents,
+	            created_datetime,
+	            creator_id
+	        )
+	        VALUES
+	        (	#{title},
+	            #{contents},
+	            NOW(),
+	            'admin'
+	        )
+	    ]]>
+	</insert>
+	
+	<insert id="insertBoardFileList" parameterType="BoardFileDto">
+	    /* 데이터베이스에 업로드 파일 정보 저장 */
+	    <![CDATA[
+	        INSERT INTO t_file
+	        (
+	            board_idx, original_file_name,
+	            stored_file_path, file_size,
+	            creator_id, created_datetime
+	        )
+	        VALUES
+	    ]]>
+	    /* 받아온 데이터(collection) : List 일 때 반복해서 쿼리 생성*/
+	    <foreach collection="list" item="item" separator=",">
+	        (
+	            #{item.boardIdx},
+	            #{item.originalFileName},
+	            #{item.storedFilePath},
+	            #{item.fileSize},
+	            'admin',
+	            Now()
+	        )
+	    </foreach>
 	</insert>
 	
 	<update id="updateHitCount" parameterType="int">
@@ -71,6 +97,24 @@
 			WHERE
 				board_idx = #{boardIdx}
 		]]>
+	</select>
+	
+	<!-- 바이트 크기로 저장되어 있기 때문에 킬로바이트 크기로 변환한다. -->
+	<select id="selectBoardFileList" parameterType="int" resultType="BoardFileDto">
+	    /* 해당 첨부파일 조회 */
+	    <![CDATA[
+	        SELECT
+	            idx,
+	            board_idx,
+	            original_file_name,
+	            FORMAT(ROUND(file_size / 1024), 0) AS file_size
+	        FROM
+	            t_file
+	        WHERE
+	            board_idx = #{boardIdx}
+	        AND
+	            deleted_yn = 'N'
+	    ]]>
 	</select>
 	
 	<update id="modifyBoard" parameterType="BoardDto">
