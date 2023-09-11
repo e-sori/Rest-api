@@ -41,6 +41,10 @@
 					</tr>
 				</tbody>
 			</table>
+			<div class="file_list" th:if="${board.fileList != null  and board.fileList.size() > 0}">[ 첨부파일 ]
+				<a th:each="list : ${board.fileList}" th:href="@{/board/file(idx=${list.idx}, boardIdx=${list.boardIdx})}" th:text="|${list.originalFileName} (${list.fileSize} kb)|"></a>
+			</div>	
+			<input type="file" id="files" name="files" multiple="multiple">
 			<input type="hidden" id="boardIdx" name="boardIdx" th:value="${board.boardIdx}">
 			<button type="submit" id="edit" class="btn">수정완료</button>
 		</form>
