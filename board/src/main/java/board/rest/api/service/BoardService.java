@@ -54,6 +54,12 @@ public class BoardService {
 	    return boardDetail;
 	}
 	
+	// 하나의 게시글에서 다운 받고자하는 파일 정보 조회
+	public BoardFileDto selectBoardFileInfo(BoardFileDto file) throws Exception{	
+			BoardFileDto boardFile = boardMapper.selectBoardFileInfo(file);
+		return boardFile;
+	}
+	
 	// 게시글 수정
 	public void modifyBoard(BoardDto board) throws Exception{
 		boardMapper.modifyBoard(board);
