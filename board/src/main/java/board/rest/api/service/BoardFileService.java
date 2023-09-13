@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import board.rest.api.dto.BoardFileDto;
@@ -27,8 +28,16 @@ public class BoardFileService {
 	 
 	public List<BoardFileDto> uploadFile(int boardIdx, List<MultipartFile> files) throws Exception {		    	
 		// 업로드한 파일이 없으면 null 반환
+		// 만약 files.isEmpty() 하면 false 떠서 return이 안된다.
+		// files는 데이터 타입이 List<MultipartFile> 이기 때문에 일단 List 자체에는 비어있는 MultipartFile이 존재하기 때문
+		// 실제로 files.size()는 1이고 files.get(0).getSize()는 0이 나온다.
+		// 참고로 size()는 List 같은 컬렉션에서 제공하는 메서드고
+		// getSize()는 MultipartFile에서 제공하는 메서드라는 점에서 차이를 알 수 있다.
+		// files.isEmpty()는 files가 String이거나 컬렉션 등 특정 타입에서만 사용 가능하다.
+		// 다양한 타입에서 사용할 경우에는 ObjectUtils.isEmpty(files) 사용
+		// 하지만, MultiparFile 자체에서 isEmpty()를 제공하기 때문에 files.isEmpty()를 사용
 		if(files.get(0).isEmpty()) {
-			return null;
+		    return null;
 		}
 		
 		// 파일을 저장할 경로 지정하고 폴더 생성하기
