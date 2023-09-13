@@ -18,8 +18,11 @@ public interface BoardMapper {
 	// 데이터베이스에 파일 정보 저장
 	void insertBoardFileList(List<BoardFileDto> fileList) throws Exception;
 	
-	// 업로드된 파일 정보 조회
+	// 하나의 게시글에 업로드된 모든 파일 정보 조회
 	List<BoardFileDto> selectBoardFileList(int boardIdx) throws Exception;
+	
+	// 하나의 게시글에서 다운 받고자하는 파일 정보 조회
+	BoardFileDto selectBoardFileInfo(BoardFileDto file) throws Exception;
 	
 	// 조회수 증가
 	void updateHitCount(int boardIdx) throws Exception;

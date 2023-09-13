@@ -101,7 +101,7 @@
 	
 	<!-- 바이트 크기로 저장되어 있기 때문에 킬로바이트 크기로 변환한다. -->
 	<select id="selectBoardFileList" parameterType="int" resultType="BoardFileDto">
-	    /* 해당 첨부파일 조회 */
+	    /* 해당 첨부파일 전부 조회 */
 	    <![CDATA[
 	        SELECT
 	            idx,
@@ -115,6 +115,24 @@
 	        AND
 	            deleted_yn = 'N'
 	    ]]>
+	</select>
+	
+	<select id="selectBoardFileInfo" parameterType="BoardFileDto" resultType="BoardFileDto">
+		/* 클릭한 파일 정보 가져오기 */
+		<![CDATA[
+			SELECT
+				original_file_name,
+				stored_file_path,
+				file_size
+			FROM
+				t_file
+			WHERE
+				idx = #{idx}
+			AND
+				board_idx = #{boardIdx}
+			AND
+				deleted_yn = 'N'
+		]]>
 	</select>
 	
 	<update id="modifyBoard" parameterType="BoardDto">
