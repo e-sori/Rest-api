@@ -8,7 +8,7 @@
 <body>
 	<div class="container">
 		<h2>게시글 상세 화면</h2>
-	    <form id="frm" th:method="put" th:action="'/board/modify/'+ ${boardIdx}">
+	    <form id="frm" th:method="put" th:action="'/board/'+ ${boardIdx}">
 	    	<table class="board_detail">
 				<colgroup>
 					<col width="15%"/>
@@ -41,8 +41,12 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="file_list" th:if="${board.fileList != null  and board.fileList.size() > 0}">[ 첨부파일 ]
-				<a th:each="list : ${board.fileList}" th:href="@{/board/file(idx=${list.idx}, boardIdx=${list.boardIdx})}" th:text="|${list.originalFileName} (${list.fileSize} kb)|"></a>
+			<div class="file_list" th:if="${board.fileList != null  and board.fileList.size() > 0}">
+				[ 첨부파일 ]
+				<div th:each="list : ${board.fileList}" >
+					<span class="file_bg" th:href="@{/board/file(idx=${list.idx}, boardIdx=${list.boardIdx})}" th:text="|${list.originalFileName} (${list.fileSize} kb)|"></span>
+					<button type="button" id="deleteFileBtn" class="btn">파일삭제</button>					
+				</div>
 			</div>	
 			<input type="file" id="files" name="files" multiple="multiple">
 			<input type="hidden" id="boardIdx" name="boardIdx" th:value="${board.boardIdx}">
