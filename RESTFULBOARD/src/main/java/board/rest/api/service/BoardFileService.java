@@ -9,23 +9,30 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import board.rest.api.dto.BoardDto;
 import board.rest.api.dto.BoardFileDto;
+import board.rest.api.mapper.BoardMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
+
 public class BoardFileService {
-	// 프로퍼티 파일, 환경 변수, 시스템 속성 등의 외부 설정 값을 Spring 빈에 주입한다.
-	// application.properties(프로퍼티 파일)에 작성해 둔 file.path를 사용하기 위해 썼다.
-	// 즉, 프로퍼티 파일에 작성해둔 file.path라는 값을 필드의 filePath에 주입하겠다는 뜻
+	/**
+	 * 프로퍼티 파일, 환경 변수, 시스템 속성 등의 외부 설정 값을 Spring 빈에 주입한다.
+	 * application.properties(프로퍼티 파일)에 작성해 둔 file.path를 사용하기 위해 썼다. 즉, 프로퍼티 파일에
+	 * 작성해둔 file.path라는 값을 필드의 filePath에 주입하겠다는 뜻
+	 */
 	@Value("${file.path}")
 	private String filePath;
+	private final BoardMapper boardMapper;
 	 
+	/**
+	 * 첨부파일 서버 컴퓨터에 저장 & 파일 정보 리턴
+	 * */
 	public List<BoardFileDto> uploadFile(int boardIdx, List<MultipartFile> files) throws Exception {		    	
 		// 업로드한 파일이 없으면 null 반환
 		// 만약 files.isEmpty() 하면 false 떠서 return이 안된다.
@@ -95,5 +102,23 @@ public class BoardFileService {
 		    oneFile.transferTo(file);
 		}
 	return fileList;
+	}
+	
+	/** 하나의 게시글에서 다운 받고자하는 파일 정보 조회 */
+	public BoardFileDto selectBoardFileInfo(BoardFileDto file) throws Exception{	
+			BoardFileDto boardFile = boardMapper.selectBoardFileInfo(file);
+		return boardFile;
+	}
+	
+	/** 첨부파일 등록 */
+	public void insertBoardFile(BoardDto board, List<MultipartFile> files) throws Exception{		
+	    // 파일을 서버 컴퓨터에 저장 후 파일 정보들 DTO에 받아주기
+	    // useGeneratedKeys로 받아온 새로 생성된 boardIdx를 매개변수로 넣어준다.
+	    List<BoardFileDto> fileList = uploadFile(board.getBoardIdx(), files);
+	 
+	    // 데이터베이스에 파일 정보 저장
+	    if(fileList != null) {
+	        boardMapper.insertBoardFileList(fileList);
+	    }
 	}
 }
