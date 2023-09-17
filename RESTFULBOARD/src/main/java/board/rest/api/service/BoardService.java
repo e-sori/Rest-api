@@ -1,12 +1,16 @@
 package board.rest.api.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import board.rest.api.dto.BoardDto;
 import board.rest.api.dto.BoardFileDto;
+import board.rest.api.dto.BoardPagingDto;
+import board.rest.api.dto.PagingVo;
 import board.rest.api.mapper.BoardMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,11 +22,21 @@ public class BoardService {
 	private final BoardMapper boardMapper;
 	private final BoardFileService boardFileService;
 	
+	/** 페이징 */
+	public PagingVo selectPaging(int currentPage) throws Exception{
+		 int rowsCount = boardMapper.selectCount();	
+		 PagingVo paging = new PagingVo(currentPage, rowsCount);
+		 
+		 return paging;		
+	}
+	
 	/** 게시글 내역 조회 */
-	public List<BoardDto> selectBoardList() throws Exception{
-		List<BoardDto> boardList = boardMapper.selectBoardList();
-		
-		return boardList;
+	public BoardPagingDto selectBoardList(int currentPage) throws Exception{
+		PagingVo paging = selectPaging(currentPage);
+		List<BoardDto> boardList = boardMapper.selectBoardList(paging);		
+		BoardPagingDto boardPaging = new BoardPagingDto(boardList, paging);		
+				
+		return boardPaging;
 	}
 	
 	/** 게시글 등록 */

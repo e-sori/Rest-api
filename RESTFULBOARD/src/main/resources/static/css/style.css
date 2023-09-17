@@ -20,12 +20,12 @@ input:focus {outline:0;}
 caption {display:none; width:0; height:0; margin-top:-1px; overflow:hidden; visibility:hidden; font-size:0; line-height:0;}
 
 .container {max-width:1024px; margin:30px auto;}
-.board_list {width:100%; border-top:2px solid #252525; border-bottom:1px solid #ccc; margin:15px 0; border-collapse: collapse;}
+.board_list {width:100%; border-top:2px solid #252525; border-bottom:1px dashed #ccc; margin:15px 0; border-collapse: collapse;}
 .board_list thead th:first-child {background-image:none;}
 .board_list thead th {border-bottom:1px solid #ccc; padding:13px 0; color:#3b3a3a; text-align: center; vertical-align:middle;}
 .board_list tbody td {border-top:1px solid #ccc; padding:13px 0; text-align:center; vertical-align:middle;}
 .board_list tbody tr:first-child td {border:none;}
-.board_list tbody tr:hover{background:#ffff99;} 
+.board_list tbody tr:hover{background:rgb(230, 230, 230);} 
 .board_list tbody td.title {text-align:left; padding-left:20px;}
 .board_list tbody td a {display:inline-block}
 
@@ -35,8 +35,8 @@ caption {display:none; width:0; height:0; margin-top:-1px; overflow:hidden; visi
 .board_detail tbody th, .board_detail tbody td {padding:10px 15px; border-bottom:1px solid #ccc;}
 .board_detail tbody textarea {width:100%; min-height:170px}
 
-.btn {margin:5px; padding: 5px 7px 6px 7px; color:#fff !important; display:inline-block; background-color:#7D7F82; border-radius:0 !important; cursor:pointer; border:none;}
-.btn:hover {background: #6b9ab8;}
+.btn{margin:5px; padding: 5px 7px 6px 7px; color:#fff !important; display:inline-block; background-color:#7D7F82; border-radius:0 !important; cursor:pointer; border:none;}
+.btn:hover{background: #6b9ab8;}
 
 .file_list a {display:inherit !important;}
 .file_list  {margin-top:10px; margin-bottom: 10px; padding-left: 10px;border-bottom: 1px solid #ccc;  padding-bottom: 10px;}
@@ -48,3 +48,9 @@ caption {display:none; width:0; height:0; margin-top:-1px; overflow:hidden; visi
 
 #files{    margin-left: 10px; background-color: #f4f4f4;padding: 3px 3px 3px;margin-bottom: 3px;}
 
+.text-right{text-align: right;}
+.text-center{text-align: center;}
+
+tfoot {border-top: #ccc solid 2px;}
+tfoot label{margin:5px; padding: 5px 7px 6px 7px; color:#fff !important; display:inline-block; border-radius:0 !important; border:none; background-color: #ebebeb; }
+tfoot .current-page-btn{margin:5px; padding: 5px 7px 6px 7px; color:#fff !important; display:inline-block; border-radius:0 !important; border:none; background-color: #6b9ab8;}

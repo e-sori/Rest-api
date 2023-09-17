@@ -11,7 +11,19 @@
 <mapper namespace="board.rest.api.mapper.BoardMapper">
 
 	<!-- 게시글 관련 쿼리들 -->
-	<select id="selectBoardList" resultType="BoardDto">
+    <select id="selectCount" resultType="int">
+    	/* 게시글 개수 조회 */
+    	<![CDATA[
+    		SELECT
+            	COUNT(*)
+	        FROM
+	            t_board
+	        WHERE
+	            deleted_yn = 'N'
+    	]]>        
+    </select>
+    
+	<select id="selectBoardList" parameterType="PagingVo" resultType="BoardDto">
 		/* 게시글 내역 조회 */
 		<![CDATA[
 			SELECT
@@ -25,6 +37,9 @@
 				deleted_yn = 'N'
 			ORDER BY board_idx DESC		
 		]]>		
+		<if test="startIndex != null and startIndex > -1 ">
+			LIMIT #{startIndex},#{rowPerPage};
+		</if>
 	</select>
 	
 	<!-- useGeneratedKey : insert 문에서 insert된 auto-increment 또는 sequence로 생성된 기본 키의 값을 가져온다. -->
