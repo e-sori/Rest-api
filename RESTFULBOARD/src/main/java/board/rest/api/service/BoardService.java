@@ -63,8 +63,13 @@ public class BoardService {
 	}
 	
 	/** 게시글 삭제 */
-	public void deleteBoard(int boardIdx) throws Exception{
+	public void deleteBoard(BoardDto board) throws Exception{
+		// 게시글 삭제
+		int boardIdx = board.getBoardIdx();
 		boardMapper.deleteBoard(boardIdx);  
+		
+		// 첨부파일 삭제
+	    boardFileService.deleteFile(board);	    
 	}
 	
 }
