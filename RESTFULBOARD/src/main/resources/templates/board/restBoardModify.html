@@ -8,7 +8,7 @@
 <body>
 	<div class="container">
 		<h2>게시글 상세 화면</h2>
-	    <form id="frm" th:method="put" th:action="'/board/'+ ${boardIdx}">
+	    <form id="frm" method="post" th:action="'/board/'+ ${boardIdx}" enctype="multipart/form-data">
 	    	<table class="board_detail">
 				<colgroup>
 					<col width="15%"/>
@@ -41,36 +41,71 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="file_list" th:if="${board.fileList != null  and board.fileList.size() > 0}">
-				[ 첨부파일 ]
-				<div th:each="list : ${board.fileList}" >
-					<span class="file_bg" th:href="@{/board/file(idx=${list.idx}, boardIdx=${list.boardIdx})}" th:text="|${list.originalFileName} (${list.fileSize} kb)|"></span>
-					<button type="button" id="deleteFileBtn" class="btn">파일삭제</button>					
-				</div>
-			</div>	
+			<input type="hidden" id="method" name="_method"  value="put"/>
+			<div class="eventDiv">
+				<div class="file_list" th:if="${board.fileList != null  and board.fileList.size() > 0}">
+					[ 첨부파일 ]
+					<div th:each="list, stat : ${board.fileList}" >
+						<span class="file_bg" th:href="@{/board/file(idx=${list.idx}, boardIdx=${list.boardIdx})}" th:text="|${list.originalFileName} (${list.fileSize} kb)|"></span>
+						<input type="hidden" class="file_idx"  th:value="${list.idx}">
+						<input type="hidden" class="file_path" th:value="${list.storedFilePath}">
+						<button type="button" class="deleteFileBtn btn">파일삭제</button>					
+					</div>
+				</div>	
+			</div>
 			<input type="file" id="files" name="files" multiple="multiple">
 			<input type="hidden" id="boardIdx" name="boardIdx" th:value="${board.boardIdx}">
 			<button type="button" id="modifyBtn" class="btn">수정완료</button>
 		</form>	
 	</div>
 	<script type="text/javascript">
-		const $modifyBtn = document.querySelector('#modifyBtn');
-		const $modifyForm = document.querySelector('#frm');
+		// 파일 삭제 버튼 클릭시 상태, 클래스 변경하기
+		const eventDiv = document.querySelector('.eventDiv');
 		
-		$modifyBtn.addEventListener('click', e => {
+		eventDiv.addEventListener('click', e => {
+			const files = document.querySelector('#files');
+			const filesInfo = files.files;
+			console.log(filesInfo);
+			if(e.target.classList.contains('deleteFileBtn')){
+				const fileDiv = e.target.closest('div');
+				const fileSpan = fileDiv.querySelector('span');				
+				fileSpan.className = 'file_delete_bg';
+				
+				e.target.classList.toggle('deleteFileBtn');
+				e.target.classList.toggle('cancleFileBtn');
+				e.target.textContent = '삭제취소';
+				
+			}else if(e.target.classList.contains('cancleFileBtn')){		
+				const fileDiv = e.target.closest('div');
+				const fileSpan = fileDiv.querySelector('span');				
+				fileSpan.className = 'file_bg';
+					
+				e.target.classList.toggle('deleteFileBtn');
+				e.target.classList.toggle('cancleFileBtn');
+				e.target.textContent = '파일삭제';
+			}
+		});
+		
+		// 파일 크기 검사 후 데이터 전송
+		const modifyBtn = document.querySelector('#modifyBtn');
+		const modifyForm = document.querySelector('#frm');
+		
+		modifyBtn.addEventListener('click', () => {
+			
+				
 			const maxOneFileSize = 1 * 1024 * 1024;
 		    const maxAllFileSize = 5 * 1024 * 1024;
 		    let sumFileSize = 0;
 		    let isOneTrue = true;
 		    let isAllTrue = true;
 		    
-    		const $files = document.querySelector('#files');
+    		const files = document.querySelector('#files');
     		// input의 type이 file인 태그의 경우 .files라는 내장 프로퍼티를 사용 가능하다.
     		// .files라는 프로퍼티는 type이 file인 input을 요소로 선택해서 사용할 수 있고,
     		// 사용자가 선택한 파일들의 정보를 담고 있다.
-    		const files = $files.files;
+    		const filesInfo = files.files;
     		
-    		for(const oneFile of files){
+    		for(const oneFile of filesInfo){
 				sumFileSize += oneFile.size;
 				if(oneFile.size >maxOneFileSize){
 					alert("파일 용량이 초과되었습니다.");
@@ -80,7 +115,25 @@
 			}
 			
 			if(sumFileSize > maxAllFileSize) { isAllTrue = false; }			
-			if(isOneTrue && isAllTrue) { $modifyForm.submit(); }
+			if(isOneTrue && isAllTrue) { 			
+				// 삭제 할 hidden input에 name 넣어주기 (서버측에 board의 fileList 넘겨주기 위해서)
+				const deleteFile = document.querySelectorAll('.file_delete_bg');
+				
+				deleteFile.forEach((file, index) => {
+				    const fileIdx = file.parentNode.querySelectorAll('.file_idx');
+				    fileIdx.forEach(item => {
+						 item.setAttribute('name', `fileList[${index}].idx`);
+					});
+				    
+				    const filePath = file.parentNode.querySelectorAll('.file_path');
+				     filePath.forEach(item => {
+						 item.setAttribute('name', `fileList[${index}].storedFilePath`);
+					});
+				});	
+				
+				// 데이터 전송
+				modifyForm.submit(); 
+			}
 		});
 	</script>
 </body>

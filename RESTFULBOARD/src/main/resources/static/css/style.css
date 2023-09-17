@@ -44,6 +44,7 @@ caption {display:none; width:0; height:0; margin-top:-1px; overflow:hidden; visi
 .btn_a{padding-bottom: 3.5px;    padding-top: 4px;}
 
 .file_bg{background-color: #ebebeb; padding: 8px;}
+.file_delete_bg{background-color: #bac5cb; padding: 8px;;}
 
 #files{    margin-left: 10px; background-color: #f4f4f4;padding: 3px 3px 3px;margin-bottom: 3px;}
 

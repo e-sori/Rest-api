@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,9 +25,11 @@ import board.rest.api.service.BoardFileService;
 import board.rest.api.service.BoardService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class BoardController {
 	
 	private final BoardService boardService;
@@ -79,12 +82,14 @@ public class BoardController {
 	
 	/** 게시글 수정 처리 */
 	@PutMapping("/board/{boardIdx}")
-	public String modifyBoard(@PathVariable("boardIdx") int boardIdx, BoardDto board) throws Exception{
-		boardService.modifyBoard(board);
+	public String modifyBoard(@PathVariable("boardIdx") int boardIdx, 
+													@ModelAttribute BoardDto board,
+													@RequestParam("files") List<MultipartFile> files) throws Exception{
+		boardService.modifyBoard(board, files);
 		
 		return "redirect:/board/" + boardIdx;
 	}
-	
+
 	/** 게시글 삭제 처리 */
 	@DeleteMapping("/board/{boardIdx}")
 	public String deleteBoard(@PathVariable("boardIdx") int boardIdx) throws Exception{
@@ -95,8 +100,8 @@ public class BoardController {
 	
 	/** 첨부파일 다운로드 */
 	@GetMapping("/board/file")
-	public void downloadBoardFile(BoardFileDto file, HttpServletResponse response) throws Exception{
-		BoardFileDto boardFile = boardFileService.selectBoardFileInfo(file);
+	public void downloadFile(BoardFileDto file, HttpServletResponse response) throws Exception{
+		BoardFileDto boardFile = boardFileService.selectFileInfo(file);
 		
 		//boardFile은 따로 만든 dto 클래스이기 때문에 MultipartFile처럼 isEmpty 메서드가 없으니까 ObjectUitls.isEmpty메서드 사용
 		if(!ObjectUtils.isEmpty(boardFile)) {

@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-
+@Slf4j
 public class BoardFileService {
 	/**
 	 * 프로퍼티 파일, 환경 변수, 시스템 속성 등의 외부 설정 값을 Spring 빈에 주입한다.
@@ -105,20 +105,57 @@ public class BoardFileService {
 	}
 	
 	/** 하나의 게시글에서 다운 받고자하는 파일 정보 조회 */
-	public BoardFileDto selectBoardFileInfo(BoardFileDto file) throws Exception{	
-			BoardFileDto boardFile = boardMapper.selectBoardFileInfo(file);
+	public BoardFileDto selectFileInfo(BoardFileDto file) throws Exception{	
+			BoardFileDto boardFile = boardMapper.selectFileInfo(file);
 		return boardFile;
 	}
 	
 	/** 첨부파일 등록 */
-	public void insertBoardFile(BoardDto board, List<MultipartFile> files) throws Exception{		
-	    // 파일을 서버 컴퓨터에 저장 후 파일 정보들 DTO에 받아주기
+	public void insertFile(BoardDto board, List<MultipartFile> files) throws Exception{		
+		// 파일을 서버 컴퓨터에 저장 후 파일 정보들 DTO에 받아주기
 	    // useGeneratedKeys로 받아온 새로 생성된 boardIdx를 매개변수로 넣어준다.
 	    List<BoardFileDto> fileList = uploadFile(board.getBoardIdx(), files);
-	 
+	    
+	    if(fileList == null) {
+			return;
+		}
+	    
 	    // 데이터베이스에 파일 정보 저장
-	    if(fileList != null) {
-	        boardMapper.insertBoardFileList(fileList);
-	    }
+	    boardMapper.insertFileList(fileList);
+	}
+	
+	/** 첨부파일 삭제 */
+	public void deleteFile(BoardDto board)throws Exception{
+		List<BoardFileDto> fileList = board.getFileList();
+		
+		if(fileList == null || fileList.isEmpty()) {
+			return;
+		}
+		
+		// 서버 컴퓨터에서 삭제
+		for(BoardFileDto oneFile : fileList) {
+			String path = oneFile.getStoredFilePath();
+			File file = new File(path);
+			
+			if(!file.exists()) {
+				log.info("존재하지 않는 파일");
+				return;
+			}
+			
+			if(file.delete()) {
+				log.info("삭제 성공",oneFile.getOriginalFileName());
+			}else {
+				log.info("삭제 실패",oneFile.getOriginalFileName());
+			}
+			
+		}
+		
+		// 첨부파일 번호 리스트로 넣어주기
+		List<Integer> idxs =new ArrayList<Integer>();
+		for(BoardFileDto oneFile : fileList) {	
+			idxs.add(oneFile.getIdx());
+		}
+		// 데이터베이스에서 파일 정보 상태 삭제로 바꾸기
+		boardMapper.deleteFile(idxs);
 	}
 }
