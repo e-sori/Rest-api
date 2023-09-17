@@ -9,6 +9,8 @@
 <!-- CDATA : 특수 문자(<, >, & 등)를 태그로 인식하지 않고 쿼리 코드라는 것을 명시 -->
 <!-- 특수 문자가 없는 경우에도 넣어준 이유는 코드의 일관성과 나중에 쿼리가 수정될 수 있기 때문 -->
 <mapper namespace="board.rest.api.mapper.BoardMapper">
+
+	<!-- 게시글 관련 쿼리들 -->
 	<select id="selectBoardList" resultType="BoardDto">
 		/* 게시글 내역 조회 */
 		<![CDATA[
@@ -46,30 +48,6 @@
 	    ]]>
 	</insert>
 	
-	<insert id="insertBoardFileList" parameterType="BoardFileDto">
-	    /* 데이터베이스에 업로드 파일 정보 저장 */
-	    <![CDATA[
-	        INSERT INTO t_file
-	        (
-	            board_idx, original_file_name,
-	            stored_file_path, file_size,
-	            creator_id, created_datetime
-	        )
-	        VALUES
-	    ]]>
-	    /* 받아온 데이터(collection) : List 일 때 반복해서 쿼리 생성*/
-	    <foreach collection="list" item="item" separator=",">
-	        (
-	            #{item.boardIdx},
-	            #{item.originalFileName},
-	            #{item.storedFilePath},
-	            #{item.fileSize},
-	            'admin',
-	            Now()
-	        )
-	    </foreach>
-	</insert>
-	
 	<update id="updateHitCount" parameterType="int">
 		/* 조회수 증가 */
 		<![CDATA[
@@ -98,6 +76,64 @@
 				board_idx = #{boardIdx}
 		]]>
 	</select>
+	
+	<update id="modifyBoard" parameterType="BoardDto">
+		/* 게시글 수정 */
+		<![CDATA[
+			UPDATE
+				t_board
+			SET
+				title = #{title},
+				contents = #{contents},
+				updated_datetime = NOW(),
+				updater_id = 'admin'
+			WHERE
+				board_idx = #{boardIdx}
+		]]>
+	</update>
+	
+	<!-- delete를 사용하지 않고 update를 사용하는 이유 -->
+	<!-- db에서 아예 데이터를 삭제하지 않기 위해서 -->
+	<!-- deleted_yn 컬럼을 'Y'로 수정해서 조회시에 보이지 않게만 한다. -->
+	<!-- select 문에서 deleted_yn이 'N'인 것만 조회하는 조건 걸어뒀음 -->
+	<update id="deleteBoard" parameterType="int">
+		/* 게시글 삭제 */
+		<![CDATA[
+			 UPDATE
+			 	t_board
+			 SET
+			 	deleted_yn = 'Y',
+			 	updated_datetime = NOW(),
+			 	updater_id = 'admin'
+			 WHERE
+			 	board_idx = #{boardIdx}
+		]]>		
+	</update>
+	
+	<!-- 첨부파일 관련 쿼리들 -->
+	<insert id="insertBoardFileList" parameterType="BoardFileDto">
+	    /* 데이터베이스에 업로드 파일 정보 저장 */
+	    <![CDATA[
+	        INSERT INTO t_file
+	        (
+	            board_idx, original_file_name,
+	            stored_file_path, file_size,
+	            creator_id, created_datetime
+	        )
+	        VALUES
+	    ]]>
+	    /* 받아온 데이터(collection) : List 일 때 반복해서 쿼리 생성*/
+	    <foreach collection="list" item="item" separator=",">
+	        (
+	            #{item.boardIdx},
+	            #{item.originalFileName},
+	            #{item.storedFilePath},
+	            #{item.fileSize},
+	            'admin',
+	            Now()
+	        )
+	    </foreach>
+	</insert>
 	
 	<!-- 바이트 크기로 저장되어 있기 때문에 킬로바이트 크기로 변환한다. -->
 	<select id="selectBoardFileList" parameterType="int" resultType="BoardFileDto">
@@ -134,38 +170,5 @@
 				deleted_yn = 'N'
 		]]>
 	</select>
-	
-	<update id="modifyBoard" parameterType="BoardDto">
-		/* 게시글 수정 */
-		<![CDATA[
-			UPDATE
-				t_board
-			SET
-				title = #{title},
-				contents = #{contents},
-				updated_datetime = NOW(),
-				updater_id = 'admin'
-			WHERE
-				board_idx = #{boardIdx}
-		]]>
-	</update>
-	
-	<!-- delete를 사용하지 않고 update를 사용하는 이유 -->
-	<!-- db에서 아예 데이터를 삭제하지 않기 위해서 -->
-	<!-- deleted_yn 컬럼을 'Y'로 수정해서 조회시에 보이지 않게만 한다. -->
-	<!-- select 문에서 deleted_yn이 'N'인 것만 조회하는 조건 걸어뒀음 -->
-	<update id="deleteBoard" parameterType="int">
-		/* 게시글 삭제 */
-		<![CDATA[
-			 UPDATE
-			 	t_board
-			 SET
-			 	deleted_yn = 'Y',
-			 	updated_datetime = NOW(),
-			 	updater_id = 'admin'
-			 WHERE
-			 	board_idx = #{boardIdx}
-		]]>		
-	</update>
 	
 </mapper>

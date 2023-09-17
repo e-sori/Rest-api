@@ -29,15 +29,21 @@ caption {display:none; width:0; height:0; margin-top:-1px; overflow:hidden; visi
 .board_list tbody td.title {text-align:left; padding-left:20px;}
 .board_list tbody td a {display:inline-block}
 
-.board_detail {width:100%; border-top:2px solid #252525; border-bottom:1px solid #ccc; border-collapse:collapse;}
+.board_detail {width:100%; border-top:2px solid #252525; margin-bottom: 10px; border-bottom:1px solid #ccc; border-collapse:collapse;}
 .board_detail tbody input {width:100%;}
 .board_detail tbody th {text-align:left; background:#f7f7f7; color:#3b3a3a; vertical-align:middle; text-align: center;}
 .board_detail tbody th, .board_detail tbody td {padding:10px 15px; border-bottom:1px solid #ccc;}
 .board_detail tbody textarea {width:100%; min-height:170px}
 
-.btn {margin:5px; padding:5px 11px; color:#fff !important; display:inline-block; background-color:#7D7F82; vertical-align:middle; border-radius:0 !important; cursor:pointer; border:none;}
+.btn {margin:5px; padding: 5px 7px 6px 7px; color:#fff !important; display:inline-block; background-color:#7D7F82; border-radius:0 !important; cursor:pointer; border:none;}
 .btn:hover {background: #6b9ab8;}
 
 .file_list a {display:inherit !important;}
-.file_list  {margin-top:10px; margin-bottom: 10px; margin-left: 10px;}
+.file_list  {margin-top:10px; margin-bottom: 10px; padding-left: 10px;border-bottom: 1px solid #ccc;  padding-bottom: 10px;}
+
+.btn_a{padding-bottom: 3.5px;    padding-top: 4px;}
+
+.file_bg{background-color: #ebebeb; padding: 8px;}
+
+#files{    margin-left: 10px; background-color: #f4f4f4;padding: 3px 3px 3px;margin-bottom: 3px;}
 
