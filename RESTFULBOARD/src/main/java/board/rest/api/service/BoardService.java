@@ -9,9 +9,11 @@ import board.rest.api.dto.BoardDto;
 import board.rest.api.dto.BoardFileDto;
 import board.rest.api.mapper.BoardMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardService {
 	private final BoardMapper boardMapper;
 	private final BoardFileService boardFileService;
@@ -30,7 +32,7 @@ public class BoardService {
 	    boardMapper.insertBoard(board);
 	 
 	    // 첨부파일 등록
-	    boardFileService.insertBoardFile(board, files);
+	    boardFileService.insertFile(board, files);
 	}
 	
 	/** 게시글 상세 내용 조회 */
@@ -42,20 +44,27 @@ public class BoardService {
 	    BoardDto boardDetail = boardMapper.selectBoardDetail(boardIdx);
 	 
 	    // 파일들 정보 가져오기
-	    List<BoardFileDto> fileList = boardMapper.selectBoardFileList(boardIdx);
+	    List<BoardFileDto> fileList = boardMapper.selectFileList(boardIdx);
 	    boardDetail.setFileList(fileList);
 	 
 	    return boardDetail;
 	}
 	
 	/** 게시글 수정 */
-	public void modifyBoard(BoardDto board) throws Exception{
+	public void modifyBoard(BoardDto board, List<MultipartFile> files) throws Exception{
+		// 게시글 수정
 		boardMapper.modifyBoard(board);
+		
+		// 첨부파일 등록
+	    boardFileService.insertFile(board, files);
+	    
+	    // 첨부파일 삭제
+	    boardFileService.deleteFile(board);	    
 	}
 	
 	/** 게시글 삭제 */
 	public void deleteBoard(int boardIdx) throws Exception{
-		boardMapper.deleteBoard(boardIdx);
+		boardMapper.deleteBoard(boardIdx);  
 	}
 	
 }

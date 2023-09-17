@@ -111,7 +111,7 @@
 	</update>
 	
 	<!-- 첨부파일 관련 쿼리들 -->
-	<insert id="insertBoardFileList" parameterType="BoardFileDto">
+	<insert id="insertFileList" parameterType="BoardFileDto">
 	    /* 데이터베이스에 업로드 파일 정보 저장 */
 	    <![CDATA[
 	        INSERT INTO t_file
@@ -136,13 +136,14 @@
 	</insert>
 	
 	<!-- 바이트 크기로 저장되어 있기 때문에 킬로바이트 크기로 변환한다. -->
-	<select id="selectBoardFileList" parameterType="int" resultType="BoardFileDto">
+	<select id="selectFileList" parameterType="int" resultType="BoardFileDto">
 	    /* 해당 첨부파일 전부 조회 */
 	    <![CDATA[
 	        SELECT
 	            idx,
 	            board_idx,
 	            original_file_name,
+	            stored_file_path,
 	            FORMAT(ROUND(file_size / 1024), 0) AS file_size
 	        FROM
 	            t_file
@@ -153,8 +154,8 @@
 	    ]]>
 	</select>
 	
-	<select id="selectBoardFileInfo" parameterType="BoardFileDto" resultType="BoardFileDto">
-		/* 클릭한 파일 정보 가져오기 */
+	<select id="selectFileInfo" parameterType="BoardFileDto" resultType="BoardFileDto">
+		/* 파일 정보 가져오기 */
 		<![CDATA[
 			SELECT
 				original_file_name,
@@ -170,5 +171,23 @@
 				deleted_yn = 'N'
 		]]>
 	</select>
+	
+	<update id="deleteFile" parameterType ="int">
+		/* 파일 삭제 상태로 변경 */
+		<![CDATA[
+			UPDATE
+				t_file
+			SET
+				deleted_yn = 'Y',
+				updator_id = 'admin',
+				updated_datetime = Now()
+			WHERE
+				idx IN (
+		]]>
+			<foreach collection="list" item="item" separator=",">
+				#{item}
+			</foreach>
+			)
+	</update>
 	
 </mapper>
