@@ -92,8 +92,8 @@ public class BoardController {
 
 	/** 게시글 삭제 처리 */
 	@DeleteMapping("/board/{boardIdx}")
-	public String deleteBoard(@PathVariable("boardIdx") int boardIdx) throws Exception{
-		boardService.deleteBoard(boardIdx);
+	public String deleteBoard(@ModelAttribute BoardDto board) throws Exception{
+		boardService.deleteBoard(board);
 		
 		return "redirect:/board";
 	}

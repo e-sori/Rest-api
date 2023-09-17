@@ -45,7 +45,11 @@
 			<input type="hidden" id="method" name="_method"/>
 			<div class="file_list" th:if="${board.fileList != null  and board.fileList.size() > 0}">
 				[ 첨부파일 ]
-				<a th:each="list : ${board.fileList}" th:href="@{/board/file(idx=${list.idx}, boardIdx=${list.boardIdx})}" th:text="|${list.originalFileName} (${list.fileSize} kb)|"></a>
+				<th:block th:each="list, stat : ${board.fileList}">
+					<a th:href="@{/board/file(idx=${list.idx}, boardIdx=${list.boardIdx})}" th:text="|${list.originalFileName} (${list.fileSize} kb)|"></a>
+					<input type="hidden" class="file_idx"  th:name="'fileList[' + ${stat.index} + '].idx'"  th:value="${list.idx}">
+					<input type="hidden" class="file_path" th:name="'fileList[' + ${stat.index} + '].storedFilePath'" th:value="${list.storedFilePath}">
+				</th:block>
 			</div>	
 			<a href="/board" id="list" class="btn btn_a">목록으로</a>
 			<a th:href="'/board/view/' + ${boardIdx}" id="edit" class="btn btn_a">수정하기</a>
