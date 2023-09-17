@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
-	<title>board</title>
+	<title th:text="${title}"></title>
 	<link rel="stylesheet" th:href="@{/css/style.css}"/>
 </head>
 <body>
@@ -27,7 +27,7 @@
 				<!-- th:if - 타임리프 문법을 사용 할 경우에 쓰는 if 문 -->
 				<!-- if문 내의 조건이 일치해야만 해당 tr이 생성된다. -->
 				<!-- th:each - 타임리프 문법을 사용할 경우에 쓰는 반복문 ( ${list}에 들어있는 값을 모두 순회하면서 tr 태그를 생성한다. )-->
-	        	<tr th:if="${#lists.size(list)} > 0" th:each="list : ${list}">
+	        	<tr th:if="${#lists.size(boardPaging.boardList)} > 0" th:each="list : ${boardPaging.boardList}">
 	        		<td th:text="${list.boardIdx}"></td>
 	        		<!-- th:href -  타임리프 문법을 사용할 경우에 쓰는 href 속성 -->
 	        		<!-- href="/board/" th:attrappend="href=${list.boardIdx}" 로도 작성 가능하다. -->
@@ -36,12 +36,32 @@
 	        		<td th:text="${list.createdDatetime}"></td>
 	        	</tr> 
 	        	<!-- th:unless - 타임리프 문법을 사용할 경우에 쓴는 if 문 / 단, if와 반대로 조건이 일치하지 않을 경우 tr 생성 -->
-	        	<tr th:unless="${#lists.size(list)} > 0">
+	        	<tr th:unless="${#lists.size(boardPaging.boardList)} > 0">
 	        		<td colspan="4">조회된 결과가 없습니다.</td>
 	        	</tr>
 	        </tbody>
+	        <tfoot>
+                 <tr>
+					<td colspan="4" class="text-center" th:with="paging=${boardPaging.paging}">						
+						<a class="btn" th:if="${paging.currentPage>1}" th:href="@{/board}">처음으로</a>
+						<label th:unless="${paging.currentPage>1}">처음으로</label>
+						<a class="btn" th:if="${paging.currentPage>1}" th:href="@{/board(currentPage=${paging.currentPage-1})}">이전</a>
+						<label th:unless="${paging.currentPage>1}">이전</label>
+							<th:block th:each="num : ${#numbers.sequence(paging.startPage,paging.endPage)}" >
+								<a class="btn " th:if="${paging.currentPage != num}" th:href="@{/board(currentPage=${num})}" th:text="${num}"></a>
+								<label class="current-page-btn" th:if="${paging.currentPage == num}" th:text="${num}"></label>
+							</th:block>
+						<a class="btn" th:if="${paging.currentPage<paging.totalPage}" th:href="@{/board(currentPage=${paging.currentPage+1})}">다음</a>
+						<label th:unless="${paging.currentPage<paging.totalPage}">다음</label>
+						<a class="btn" th:if="${paging.currentPage<paging.totalPage}" th:href="@{/board(currentPage=${paging.totalPage})}">마지막으로</a>
+						<label th:unless="${paging.currentPage<paging.totalPage}">마지막으로</label>
+					</td>
+				</tr>
+			</tfoot>
 	    </table>
-	    <a href="/board/view" class="btn btn_a">글 쓰기</a>
+	    <div class="text-right">
+			<a href="/board/view" class="btn btn_a">글 쓰기</a>
+		</div>	    
     </div>
 </body>
 </html>

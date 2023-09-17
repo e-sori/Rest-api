@@ -4,8 +4,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -21,9 +25,9 @@ import org.springframework.web.util.UriUtils;
 
 import board.rest.api.dto.BoardDto;
 import board.rest.api.dto.BoardFileDto;
+import board.rest.api.dto.BoardPagingDto;
 import board.rest.api.service.BoardFileService;
 import board.rest.api.service.BoardService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,10 +41,12 @@ public class BoardController {
 	
 	/** 게시판 목록 조회 화면 */
 	@GetMapping("/board")
-	public String openBoardList(Model model) throws Exception{
-		List<BoardDto> list = boardService.selectBoardList();
+	public String openBoardList(@RequestParam(value="currentPage", required = false ,defaultValue = "1") int currentPage, 
+														Model model) throws Exception{
+		BoardPagingDto boardPaging = boardService.selectBoardList(currentPage);
 		
-		model.addAttribute("list", list);
+		model.addAttribute("title","게시판 목록");
+		model.addAttribute("boardPaging", boardPaging);
 		
 		return "/board/restBoardList";		
 	}
@@ -48,6 +54,9 @@ public class BoardController {
 	/** 게시글 등록 화면 */
 	@GetMapping("/board/view")
 	public String openBoardWrite(Model model) throws Exception{
+		
+		model.addAttribute("title","게시글 등록");
+		
 		return "/board/restBoardWrite";
 	}
 	
@@ -66,6 +75,7 @@ public class BoardController {
 		// ("매핑에 사용할 변수 이름") 변수와 묶어 줄 매개변수
 		BoardDto board = boardService.selectBoardDetail(boardIdx);		
 		
+		model.addAttribute("title","게시글 조회");
 		model.addAttribute("board", board);
 		
 		return "/board/restBoardDetail";
@@ -75,6 +85,8 @@ public class BoardController {
 	@GetMapping("/board/view/{boardIdx}")
 	public String openBoardModify(@PathVariable("boardIdx") int boardIdx, Model model) throws Exception{
 		BoardDto board = boardService.selectBoardDetail(boardIdx);
+		
+		model.addAttribute("title","게시글 수정");
 		model.addAttribute("board", board);
 		
 		return "/board/restBoardModify";
@@ -98,54 +110,37 @@ public class BoardController {
 		return "redirect:/board";
 	}
 	
-	/** 첨부파일 다운로드 */
+	/** 첨부파일 다운로드 
+	 * ResponseEntity : HTTP 응답의 상태 코드, 헤더, 본문 
+	 * 									RESTful 웹 서비스에서 응답을 보다 세밀하게 제어하기 위해 사용
+	 * Resource : UrlResource의 내용을 body로 보내주기 위해서 사용
+	 */
 	@GetMapping("/board/file")
-	public void downloadFile(BoardFileDto file, HttpServletResponse response) throws Exception{
+	public ResponseEntity<Resource> downloadFile(BoardFileDto file) throws Exception{
 		BoardFileDto boardFile = boardFileService.selectFileInfo(file);
 		
 		//boardFile은 따로 만든 dto 클래스이기 때문에 MultipartFile처럼 isEmpty 메서드가 없으니까 ObjectUitls.isEmpty메서드 사용
-		if(!ObjectUtils.isEmpty(boardFile)) {
-			String fileName = boardFile.getOriginalFileName();
-			int fileSize = (int)boardFile.getFileSize();
-			
-			// 파일의 경로를 바이트배열로 읽어온다.
-			UrlResource resource = new UrlResource("file:" + boardFile.getStoredFilePath());
-			
-			// 파일 이름 URL 주소로 사용하기 전에 인코딩하기
-			String encodedFileName = UriUtils.encode(fileName, StandardCharsets.UTF_8);
-			
-			// Content-Disposition: HTTP 응답의 처리 방식, 브라우저가 반환된 내용을 화면에 표시할 것인지 파일로 다운로드할 것인지 결정한다.
-	        // attachment : 반환된 내용을 파일로 다운로드 해라
-	        String contentDisposition = "attachment; filename=\"" + encodedFileName + "\"";
-	        response.setHeader("Content-Disposition", contentDisposition);
-	        
-	        // ContentType : 응답의 본문(body)의 미디어 타입 (데이터의 종류, 포맷에 대한 정보 제공)
-	        // application/octet-stream : 바이너리 데이터
-	        response.setContentType("application/octet-stream");
-	        
-	        // 파일의 크기 설정(바이트 단위)
-	        response.setContentLengthLong(fileSize);
-	        
-	        // 파일의 바이트 수 가져오기 위해서 인풋 스트림 생성
-	        InputStream inputStream = resource.getInputStream();
-	        
-	        // 다운로드 파일 데이터를 클라이언트에 전달하기 위해 response에 출력할 출력 스트림을 생성	        I
-	        OutputStream outStream = response.getOutputStream();	       
-
-	        // 파일을 바이트 배열로 가져오기
-	        byte[] byteFile = resource.getContentAsByteArray();
-
-	        int byteLength;
-	        // inputStream.read(byteFile) : 바이트 배열의 길이
-	        // 바이트 배열을 루프를 돌면서 하나의 바이트씩 읽는다. 더 이상 읽을 바이트가 없으면 -1 리턴
-			while ((byteLength = inputStream.read(byteFile)) > 0) {
-				// write(바이트배열, 바이트배열에서 데이터의 시작 위치, 바이트배열의 테이터 길이]
-				// 바이트 배열에서 시작 위치 부터 데이터 길이까지 데이터를 출력 스트림으로 보관
-				outStream.write(byteFile, 0, byteLength);
-			}			
-			outStream.flush();
-			inputStream.close();   
-			outStream.close();  
+		if(ObjectUtils.isEmpty(boardFile)) {
+			return null;
 		}
+		
+		String fileName = boardFile.getOriginalFileName();
+		
+		// 파일의 경로를 바이트배열로 읽어온다.
+		UrlResource resource = new UrlResource("file:" + boardFile.getStoredFilePath());
+		
+		// 파일 이름 URL 주소로 사용하기 전에 인코딩하기
+		String encodedFileName = UriUtils.encode(fileName, StandardCharsets.UTF_8);
+		
+		// Content-Disposition: HTTP 응답의 처리 방식, 브라우저가 반환된 내용을 화면에 표시할 것인지 파일로 다운로드할 것인지 결정한다.
+        // attachment : 반환된 내용(인코딩된 파일 이름)을 파일로 다운로드 해라
+        String contentDisposition = "attachment; filename=\"" + encodedFileName + "\"";
+
+        // ResponseEntity.ok() : ResponseEntity의 메서드 상태 코드 200(OK)를 가진 ResponseEntity 객체 생성
+        // header() : HTTP 응답의 헤더
+        // HttpHeaders.CONTENT_DISPOSITION : HTTP 헤더 중 Content-Disposition이라는 헤더의 이름
+        // 헤더에 contentDisposition이라는 변수를 넣어준다. (다운로드할 것을 명시하는 attachment와 파일이름)
+        // body(resource) : HTTP 응답의 본문 / 위에서 생성한 UrlResource 객체 - 실제 파일의 내용
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,contentDisposition).body(resource);
 	}
 }
