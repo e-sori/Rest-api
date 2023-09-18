@@ -38,9 +38,9 @@ public class PagingVo {
 	    // 페이징이 처음에 1~10이기 때문에 currentPage가 6이되는 순간 startPager가 2로, endPage가 11로 바뀐다.
 	    // totalPage에도 조건을 거는 이유는 만약 게시글이 적어서 totalPage가 10보다 적을 경우
 	    // 페이징이 시작번호와 끝 번호가 바뀔 이유가 없기 때문
-	    if(currentPage >= 6 && totalPage > 10) {
-	    	startPage = currentPage - 4;
-	    	endPage = currentPage + 5;
+	    if(currentPage >= 7 && totalPage > 10) {
+	    	startPage = currentPage - 5;
+	    	endPage = currentPage + 4;
 	        // 현재 페이지에 보이는 페이징 번호가 마지막 페이징 숫자보다 같거나 클 경우
 	        // 더 이상 시작 번호와 끝 번호가 바뀌지 않도록 한다.
 	        if(endPage >= totalPage) {
