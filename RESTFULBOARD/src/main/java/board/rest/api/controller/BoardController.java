@@ -28,6 +28,7 @@ import board.rest.api.dto.BoardFileDto;
 import board.rest.api.dto.BoardPagingDto;
 import board.rest.api.service.BoardFileService;
 import board.rest.api.service.BoardService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
