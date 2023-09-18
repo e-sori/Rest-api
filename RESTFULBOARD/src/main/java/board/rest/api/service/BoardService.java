@@ -30,12 +30,18 @@ public class BoardService {
 		 return paging;		
 	}
 	
-	/** 게시글 내역 조회 */
+	/** 게시글 목록 조회 */
 	public BoardPagingDto selectBoardList(int currentPage) throws Exception{
 		PagingVo paging = selectPaging(currentPage);
 		List<BoardDto> boardList = boardMapper.selectBoardList(paging);		
 		BoardPagingDto boardPaging = new BoardPagingDto(boardList, paging);		
-				
+		
+		for(BoardDto board : boardList) {
+			int boardIdx = board.getBoardIdx();
+			List<BoardFileDto> fileList = boardMapper.selectFileList(boardIdx);
+			board.setFileList(fileList);
+		}						
+		
 		return boardPaging;
 	}
 	
@@ -43,6 +49,7 @@ public class BoardService {
 	public void insertBoard(BoardDto board, List<MultipartFile> files) throws Exception{
 	    // form 데이터 등록
 	    // dao에서 등록된 pk(boardIdx) 받아오도록 작성함 - useGeneratedKeys
+	    if(board.getTitle().trim().isEmpty()) {board.setTitle("제목없음");}
 	    boardMapper.insertBoard(board);
 	 
 	    // 첨부파일 등록

@@ -7,8 +7,21 @@
 </head>
 <body>
     <div class="container">
-    	<h2>게시글 목록</h2>
+    	<h2>자유게시판</h2>
     	<table class="board_list">
+			<div class="search">
+				<div class="orderby dis_inline">
+					<a href="#">최신순</a>
+					<span> | </span>
+					<a href="#">조회순</a>
+					<span> | </span>
+					<a href="#">댓글순</a>
+				</div>			
+				<div class="searchDiv dis_inline">
+					<input  value="검색어를 입력하세요."/>
+					<button type="button">검색</button>
+				</div>			
+			</div>		
 	        <colgroup>
 	            <col width="15%"/>
 	            <col width="*"/>
@@ -31,7 +44,10 @@
 	        		<td th:text="${list.boardIdx}"></td>
 	        		<!-- th:href -  타임리프 문법을 사용할 경우에 쓰는 href 속성 -->
 	        		<!-- href="/board/" th:attrappend="href=${list.boardIdx}" 로도 작성 가능하다. -->
-	        		<td class="title"><a th:href="'/board/' + ${list.boardIdx}"  th:text="${list.title}"></a></td>
+	        		<td class="title">
+						<a th:href="'/board/' + ${list.boardIdx}"  th:text="${list.title}"></a>
+						<img th:if="${not #lists.isEmpty(list.fileList)}" src="/img/clip.png" class="clip_img">
+					</td>
 	        		<td th:text="${list.hitCnt}"></td>
 	        		<td th:text="${list.createdDatetime}"></td>
 	        	</tr> 
@@ -42,26 +58,26 @@
 	        </tbody>
 	        <tfoot>
                  <tr>
-					<td colspan="4" class="text-center" th:with="paging=${boardPaging.paging}">						
-						<a class="btn" th:if="${paging.currentPage>1}" th:href="@{/board}">처음으로</a>
+					<td colspan="4" class="text_center" th:with="paging=${boardPaging.paging}">						
+						<a class="paging_string" th:if="${paging.currentPage>1}" th:href="@{/board}">처음으로</a>
 						<label th:unless="${paging.currentPage>1}">처음으로</label>
-						<a class="btn" th:if="${paging.currentPage>1}" th:href="@{/board(currentPage=${paging.currentPage-1})}">이전</a>
+						<a class="paging_string" th:if="${paging.currentPage>1}" th:href="@{/board(currentPage=${paging.currentPage-1})}">이전</a>
 						<label th:unless="${paging.currentPage>1}">이전</label>
 							<th:block th:each="num : ${#numbers.sequence(paging.startPage,paging.endPage)}" >
-								<a class="btn " th:if="${paging.currentPage != num}" th:href="@{/board(currentPage=${num})}" th:text="${num}"></a>
+								<a class="paging " th:if="${paging.currentPage != num}" th:href="@{/board(currentPage=${num})}" th:text="${num}"></a>
 								<label class="current-page-btn" th:if="${paging.currentPage == num}" th:text="${num}"></label>
 							</th:block>
-						<a class="btn" th:if="${paging.currentPage<paging.totalPage}" th:href="@{/board(currentPage=${paging.currentPage+1})}">다음</a>
+						<a class="paging_string" th:if="${paging.currentPage<paging.totalPage}" th:href="@{/board(currentPage=${paging.currentPage+1})}">다음</a>
 						<label th:unless="${paging.currentPage<paging.totalPage}">다음</label>
-						<a class="btn" th:if="${paging.currentPage<paging.totalPage}" th:href="@{/board(currentPage=${paging.totalPage})}">마지막으로</a>
+						<a class="paging_string" th:if="${paging.currentPage<paging.totalPage}" th:href="@{/board(currentPage=${paging.totalPage})}">마지막으로</a>
 						<label th:unless="${paging.currentPage<paging.totalPage}">마지막으로</label>
 					</td>
-				</tr>
-			</tfoot>
-	    </table>
-	    <div class="text-right">
-			<a href="/board/view" class="btn btn_a">글 쓰기</a>
-		</div>	    
+				</tr>				
+			</tfoot>		
+	    </table>   
+	    <div class="text_right writeBtn">
+			<a href="/board/view" class="paging_string" >글 쓰기</a>
+		</div>	
     </div>
 </body>
 </html>

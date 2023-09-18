@@ -34,7 +34,7 @@ public interface BoardMapper {
 	
 	/** 데이터베이스에 파일 정보 저장 */
 	void insertFileList(List<BoardFileDto> fileList) throws Exception;
-		
+
 	/** 업로드된 모든 파일 정보 조회  by 게시판 번호 */
 	List<BoardFileDto> selectFileList(int boardIdx) throws Exception;
 	

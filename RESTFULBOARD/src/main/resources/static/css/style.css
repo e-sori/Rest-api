@@ -1,56 +1,308 @@
-@CHARSET "UTF-8";
+@charset "UTF-8";
 
-@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
-@import url(http://cdn.jsdelivr.net/font-nanum/1.0/nanumbarungothic/nanumbarungothic.css);
-
-html{overflow:scorll;}
-html, body, div, h1, h2, a, form, table, caption, thead, tbody, tr, th, td, submit {
-	margin:0; outline:0; border:0; padding:0; font-size:100%; vertical-align:baseline; background:transparent;
+@font-face {
+  font-family: "Pretendard-Regular";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+  font-weight: 400;
+  font-style: normal;
 }
-body { 
-	font-size:0.875em; line-height:1.5; color:#666; -webkit-text-size-adjust:none; min-width:320px;
-	font-family:'NanumGothic','나눔고딕',dotum, "Helvetica Neue", Helvetica, Verdana, Arial, Sans-Serief;
+
+/* 기본 css */
+html {
+  overflow: scorll;
 }
-h1, h2, h3 {font-size: 1.5em;}
-p{margin:0; padding:0;}
-ul{margin:0;}
-a:link, a:visited {text-decoration:none; color: #656565;}
-input{vertical-align:middle;}
-input:focus {outline:0;}
-caption {display:none; width:0; height:0; margin-top:-1px; overflow:hidden; visibility:hidden; font-size:0; line-height:0;}
+html,body,div,h1,h2,a,form,table,caption,thead,
+tbody,tr,th,td,submit {
+  margin: 0;
+  outline: 0;
+  border: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+body {
+  font-size: 0.875em;
+  line-height: 1.5;
+  color: #666;
+  -webkit-text-size-adjust: none;
+  min-width: 320px;
+  font-family: "Pretendard-Regular";
+}
+h1,
+h2,
+h3 {
+  font-size: 1.5em;
+}
+p {
+  margin: 0;
+  padding: 0;
+}
+ul {
+  margin: 0;
+}
+a:link,
+a:visited {
+  text-decoration: none;
+  color: #656565;
+}
 
-.container {max-width:1024px; margin:30px auto;}
-.board_list {width:100%; border-top:2px solid #252525; border-bottom:1px dashed #ccc; margin:15px 0; border-collapse: collapse;}
-.board_list thead th:first-child {background-image:none;}
-.board_list thead th {border-bottom:1px solid #ccc; padding:13px 0; color:#3b3a3a; text-align: center; vertical-align:middle;}
-.board_list tbody td {border-top:1px solid #ccc; padding:13px 0; text-align:center; vertical-align:middle;}
-.board_list tbody tr:first-child td {border:none;}
-.board_list tbody tr:hover{background:rgb(230, 230, 230);} 
-.board_list tbody td.title {text-align:left; padding-left:20px;}
-.board_list tbody td a {display:inline-block}
+input:focus {
+  outline: 0;
+}
+caption {
+  display: none;
+  width: 0;
+  height: 0;
+  margin-top: -1px;
+  overflow: hidden;
+  visibility: hidden;
+  font-size: 0;
+  line-height: 0;
+}
 
-.board_detail {width:100%; border-top:2px solid #252525; margin-bottom: 10px; border-bottom:1px solid #ccc; border-collapse:collapse;}
-.board_detail tbody input {width:100%;}
-.board_detail tbody th {text-align:left; background:#f7f7f7; color:#3b3a3a; vertical-align:middle; text-align: center;}
-.board_detail tbody th, .board_detail tbody td {padding:10px 15px; border-bottom:1px solid #ccc;}
-.board_detail tbody textarea {width:100%; min-height:170px}
+/* 검색 css */
+.search{
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 47px;
+    margin-bottom: -11px;
+}
 
-.btn{margin:5px; padding: 5px 7px 6px 7px; color:#fff !important; display:inline-block; background-color:#7D7F82; border-radius:0 !important; cursor:pointer; border:none;}
-.btn:hover{background: #6b9ab8;}
+.search input {
+  height: 22px;
+  border: #b4bbbb solid 1px;
+  background-color: #f4f4f4;
+  border-radius: 4px;
+  color: #767d7b;
+  vertical-align: middle;
+}
 
-.file_list a {display:inherit !important;}
-.file_list  {margin-top:10px; margin-bottom: 10px; padding-left: 10px;border-bottom: 1px solid #ccc;  padding-bottom: 10px;}
+.search button {
+  display: inline-block;
+  height: 27px;
+  border: #ffffff solid 1px;
+  border-radius: 4px;
+  color: rgb(255, 255, 255);
+  background-color: rgb(192, 192, 192);
+  vertical-align: middle;
+}
 
-.btn_a{padding-bottom: 3.5px;    padding-top: 4px;}
+.search button:hover {
+  display: inline-block;
+  height: 27px;
+  border: #ffffff solid 1px;
+  border-radius: 4px;
+  color: rgb(128, 128, 0);
+  background-color: rgb(213, 238, 68);
+  cursor: pointer;
+}
 
-.file_bg{background-color: #ebebeb; padding: 8px;}
-.file_delete_bg{background-color: #bac5cb; padding: 8px;;}
+.orderby {
+  display: inline;
+  margin-right: 10px;
+  margin-bottom: -9px;
+}
+.orderby a:hover {
+  color: rgb(213, 238, 68);
+}
 
-#files{    margin-left: 10px; background-color: #f4f4f4;padding: 3px 3px 3px;margin-bottom: 3px;}
+.searchDiv{
+	margin-bottom: 1px;
+}
 
-.text-right{text-align: right;}
-.text-center{text-align: center;}
+/* 테이블 css */
+.container {
+	overflow: auto;
+  max-width: 1024px;
+  margin: 30px auto;
+}
+.board_list {
+  width: 100%;
+  border-top: 2px solid #252525;
+  border-bottom: 1px dashed #ccc;
+  margin: 15px 0;
+  border-collapse: collapse;
+}
+.board_list thead th:first-child {
+  background-image: none;
+}
+.board_list thead th {
+  border-bottom: 1px solid #ccc;
+  padding: 13px 0;
+  color: #3b3a3a;
+  text-align: center;
+  vertical-align: middle;
+}
+.board_list tbody td {
+  border-top: 1px solid #ccc;
+  padding: 13px 0;
+  text-align: center;
+  vertical-align: middle;
+}
+.board_list tbody tr:first-child td {
+  border: none;
+}
+.board_list tbody tr:hover {
+  background: rgb(249, 249, 249);
+}
+.board_list tbody td.title {
+  text-align: left;
+  padding-left: 20px;
+}
+.board_list tbody td a {
+  display: inline-block;
+}
 
-tfoot {border-top: #ccc solid 2px;}
-tfoot label{margin:5px; padding: 5px 7px 6px 7px; color:#fff !important; display:inline-block; border-radius:0 !important; border:none; background-color: #ebebeb; }
-tfoot .current-page-btn{margin:5px; padding: 5px 7px 6px 7px; color:#fff !important; display:inline-block; border-radius:0 !important; border:none; background-color: #6b9ab8;}
+.board_detail {
+  width: 100%;
+  border-top: 2px solid #252525;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+  border-collapse: collapse;
+}
+.board_detail tbody input {
+  width: 100%;
+}
+.board_detail tbody th {
+  text-align: left;
+  background: #f7f7f7;
+  color: #3b3a3a;
+  vertical-align: middle;
+  text-align: center;
+}
+.board_detail tbody th,
+.board_detail tbody td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #ccc;
+}
+.board_detail tbody textarea {
+  width: 100%;
+  min-height: 170px;
+}
+
+.clip_img{
+	width:15px;
+	height: 15px;
+	vertical-align: text-top;
+	margin-left: 10px;
+}
+
+/* 버튼 css */
+.btn {
+  margin: 5px;
+  padding: 5px 7px 6px 7px;
+  color: #fff !important;
+  display: inline-block;
+  background-color: #7d7f82;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+}
+.btn:hover {
+  background: rgb(213, 238, 68);
+}
+
+.writeBtn{
+	margin-top: -20px;
+}
+
+/* 파일 목록 css */
+.file_list a {
+  display: inherit !important;
+}
+.file_list {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+
+.file_bg {
+  background-color: #ebebeb;
+  padding: 8px;
+}
+.file_delete_bg {
+  background-color: #bac5cb;
+  padding: 8px;
+}
+
+#files {
+  margin-left: 10px;
+  background-color: #f4f4f4;
+  padding: 3px 3px 3px;
+  margin-bottom: 3px;
+}
+
+/* 텍스트 정렬 css */
+.text_right {
+  text-align: right;
+}
+.text_center {
+  text-align: center;
+}
+.text_left {
+  text-align: left;
+}
+.dis_inline{
+    display: inline;
+}
+
+/* tfoot css */
+tfoot {
+  border-top: #ccc solid 2px;
+}
+tfoot label {
+  margin: 5px;
+  padding: 5px 7px 6px 7px;
+  color: rgb(219, 219, 219);
+  display: inline-block;
+  border-radius: 4px;
+  border: none;
+}
+tfoot .current-page-btn {
+  margin: 5px;
+  padding: 5px 7px 6px 7px;
+  color: #fff !important;
+  display: inline-block;
+  width: 18px;
+  height: 20px;
+  border-radius: 16px;
+  border: none;
+  background-color: rgb(213, 238, 68);
+  font-weight: bold;
+}
+.paging {
+  margin: 5px;
+  padding: 5px 7px 6px 7px;
+  color: rgb(128, 128, 128) !important;
+  display: inline-block;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  width: 18px;
+  height: 20px;
+}
+.paging:hover {
+  margin: 5px;
+  padding: 5px 7px 6px 7px;
+  background: rgb(213, 238, 68);
+  width: 18px;
+  height: 20px;
+  border-radius: 16px;
+}
+.paging_string {
+  margin: 5px;
+  padding: 5px 7px 6px 7px;
+  color: rgb(128, 128, 128);
+  display: inline-block;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+}
+.paging_string:hover {
+  color: rgb(213, 238, 68);
+}
