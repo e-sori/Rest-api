@@ -91,7 +91,9 @@
 		const modifyForm = document.querySelector('#frm');
 		
 		modifyBtn.addEventListener('click', () => {
-			
+			let title = document.querySelector('#title');
+			let titleValue = title.value;
+			title.value = titleValue.trim().length === 0 ? '제목 없음' : title;
 				
 			const maxOneFileSize = 1 * 1024 * 1024;
 		    const maxAllFileSize = 5 * 1024 * 1024;

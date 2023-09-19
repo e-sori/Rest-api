@@ -24,12 +24,27 @@
     </select>
     
 	<select id="selectBoardList" parameterType="PagingVo" resultType="BoardDto">
-		/* 게시글 내역 조회 */
+		/* 게시글 목록 조회 */
 		<![CDATA[
 			SELECT
 				board_idx,
 				title,
+				CASE
+					WHEN EXISTS(
+						SELECT 
+							1 
+						FROM 
+							t_file
+						WHERE
+						   board_idx = t_board.board_idx
+						AND
+						   deleted_yn = 'N'
+					)THEN 1
+					ELSE 0
+				END AS is_file,
+				contents,
 				hit_cnt,
+				creator_id,
 				created_datetime
 			FROM
 				t_board
@@ -75,7 +90,7 @@
 		]]>
 	</update>
 	
-	<select id="selectBoardDetail" parameterType="int">
+	<select id="selectBoardDetail" parameterType="int" resultType="BoardDto">
 		/* 해당 게시글 조회 */
 		<![CDATA[
 			SELECT

@@ -45,7 +45,7 @@ ul {
 a:link,
 a:visited {
   text-decoration: none;
-  color: #656565;
+  color: rgb(128, 128, 128);
 }
 
 input:focus {
@@ -302,6 +302,9 @@ tfoot .current-page-btn {
   border-radius: 4px;
   cursor: pointer;
   border: none;
+  background-color: transparent;
+  font-family: "Pretendard-Regular";
+  font-size: 14px;
 }
 .paging_string:hover {
   color: rgb(213, 238, 68);

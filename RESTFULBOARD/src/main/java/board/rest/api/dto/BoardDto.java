@@ -23,5 +23,7 @@ public class BoardDto {
 	private LocalDateTime createdDatetime;
 	private String updaterId;
 	private LocalDateTime updatedDtetime;
+	
 	private List<BoardFileDto> fileList;
+	private int isFile;
 }

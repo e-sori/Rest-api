@@ -46,7 +46,7 @@
 	        		<!-- href="/board/" th:attrappend="href=${list.boardIdx}" 로도 작성 가능하다. -->
 	        		<td class="title">
 						<a th:href="'/board/' + ${list.boardIdx}"  th:text="${list.title}"></a>
-						<img th:if="${not #lists.isEmpty(list.fileList)}" src="/img/clip.png" class="clip_img">
+						<img th:if="${list.isFile} == 1" src="/img/clip.png" class="clip_img">
 					</td>
 	        		<td th:text="${list.hitCnt}"></td>
 	        		<td th:text="${list.createdDatetime}"></td>
